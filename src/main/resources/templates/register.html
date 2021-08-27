@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urząd Miasta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <style type="text/css">
+        .login-form {
+            width: 340px;
+            margin: 50px auto;
+        }
+
+        .login-form form {
+            margin-bottom: 15px;
+            background: #f7f7f7;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        .login-form h2 {
+            margin: 0 0 15px;
+        }
+
+        .form-control, .btn {
+            min-height: 38px;
+            border-radius: 2px;
+        }
+
+        .btn {
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1 class="text-center">Urząd Miasta</h1>
+<div class="login-form">
+
+
+    <div th:if="${!registerError.success}">
+        <form action="#" th:action="@{/register}" th:object="${register}" method="post">
+            <h2 class="text-center">Rejestracja</h2>
+
+            <div class="form-group">
+                <h4>Imię</h4>
+                <input type="text" class="form-control" th:field="*{firstName}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Nazwisko</h4>
+                <input type="text" class="form-control" th:field="*{lastName}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>PESEL</h4>
+                <input type="text" class="form-control" th:field="*{pesel}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Województwo</h4>
+                <input type="text" class="form-control" th:field="*{state}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Miasto</h4>
+                <input type="text" class="form-control" th:field="*{city}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Ulica</h4>
+                <input type="text" class="form-control" th:field="*{street}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Email</h4>
+                <input type="text" class="form-control" th:field="*{email}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Telefon</h4>
+                <input type="text" class="form-control" th:field="*{phone}" required="required">
+            </div>
+
+            <div class="form-group">
+                <h4>Login</h4>
+                <input type="text" class="form-control" th:field="*{userName}" required="required">
+            </div>
+            <div th:if="${registerError.nameError}" class="alert alert-danger" role="alert">
+                Nazwa jest zajęta.
+            </div>
+
+            <div class="form-group">
+                <h4>Hasło</h4>
+                <input type="password" class="form-control" th:field="*{password}" required="required">
+            </div>
+            <div th:if="${registerError.passwordTooEasy}" class="alert alert-danger" role="alert">
+                Hasło jest zbyt proste.<br>
+                Hasło powinno zawierać:<br>
+                od 6 do 20 znaków, <br>
+                conajmniej jedną dużą literę<br>
+                conajmniej jedną cyfrę<br>
+                conajmniej jeden znak specjalny.<br>
+            </div>
+            <div th:if="${registerError.passwordsNotMatch}" class="alert alert-danger" role="alert">
+                Hasła nie pasują do siebie.
+            </div>
+
+            <div class="form-group">
+                <h4>Powtórz hasło</h4>
+                <input type="password" class="form-control" th:field="*{repeatPassword}" required="required">
+            </div>
+
+
+            <div class="form-group">
+                <button id="button" type="submit" value="Submit" class="btn btn-primary btn-block">Zarejestruj się
+                </button>
+            </div>
+
+
+        </form>
+
+
+    </div>
+    <div th:if="${registerError.success}">
+        <form action="/login">
+            <h2 class="text-center">Konto założone</h2>
+            <div class="form-group">
+                <button id="button2" type="submit" value="Submit" class="btn btn-primary btn-block">Powrót do strony
+                    logowania
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+</body>
+</html>

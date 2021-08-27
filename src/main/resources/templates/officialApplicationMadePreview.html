@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urząd Miasta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <style type="text/css">
+
+        .login-form form {
+            margin-bottom: 15px;
+            background: #f7f7f7;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        .login-form h2 {
+            margin: 0 0 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center">Urząd Miasta</h1>
+    <form action="#" th:action="@{/official/applicationMadeUpdate}" th:object="${form}" method="post">
+        <br>
+        <div class="alert alert-primary" role="alert">
+            <h4>
+                <td tex th:text="${form.name}"/>
+                <input th:field="*{applicationId}" type="hidden"/>
+            </h4>
+            <td th:text="${form.description}"/>
+            <br>
+            <div class="alert alert-success" role="alert">
+                Data złożenia wniosku:
+                <td th:text="${form.timestamp}"/>
+            </div>
+            Złożony przez użytkownika:<br>
+            Id: <td th:text="${user.id}"/><br>
+            Nazwa: <td th:text="${user.userName}"/><br>
+            Imię: <td th:text="${user.firstName}"/><br>
+            Nazwisko: <td th:text="${user.lastName}"/><br>
+            PESEL: <td th:text="${user.pesel}"/><br>
+            Miejscowość: <td th:text="${user.city}"/><br>
+            Ulica: <td th:text="${user.street}"/><br>
+            E-mail: <td th:text="${user.email}"/><br>
+            Telefon: <td th:text="${user.phone}"/><br>
+        </div>
+
+        <tr th:each="fieldsInForm, itemStat: *{fieldsInForm}">
+
+            <div class="alert alert-primary" role="alert">
+                <h4>
+                    <td th:text="${fieldsInForm.field.name}"/>
+                </h4>
+                <td th:text="${fieldsInForm.field.description}"/>
+                <br>
+                <input th:field="*{fieldsInForm[__${itemStat.index}__].field.id}" type="hidden"/>
+                <input th:field="*{fieldsInForm[__${itemStat.index}__].field.name}" type="hidden"/>
+                <input th:field="*{fieldsInForm[__${itemStat.index}__].field.description}" type="hidden"/>
+                <input th:field="*{fieldsInForm[__${itemStat.index}__].field.formId}" type="hidden"/>
+
+                <input type="text" th:field="*{fieldsInForm[__${itemStat.index}__].value}" class="form-control"
+                       disabled>
+            </div>
+        </tr>
+
+
+        <div th:if="${!form.checked}" class="alert alert-primary" role="alert">
+            <div th:if="${!conflict}">
+                <div class="row" align="center">
+                    <div class="col-sm-6">
+                        <input type="radio" class="form-check-input" onclick="disable()" th:field="*{approved}"
+                               th:value="${true}"/>
+                        <label th:for="${#ids.prev('approved')}">Przyjmij wniosek</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="radio" class="form-check-input" onclick="enable()" th:field="*{approved}"
+                               th:value="${false}"/>
+                        <label th:for="${#ids.prev('approved')}">Odrzuć wniosek</label>
+                    </div>
+                </div>
+                <div id="comment" style="display: block">
+                    <h5>Komentarz</h5>
+                    <input type="text" class="form-control" th:field="*{comment}" size="500"/>
+                </div>
+                <script>
+                    function disable() {
+                        var x = document.getElementById("comment");
+                        x.style.display = "none";
+                    }
+
+                    function enable() {
+                        var x = document.getElementById("comment");
+                        x.style.display = "block";
+                    }
+                </script>
+            </div>
+            <div th:if="${conflict}" class="alert alert-danger" role="alert">
+                Nie możesz zatwierdzać własnych wniosków
+            </div>
+        </div>
+        <div th:if="${form.checked}">
+            <div th:if="${form.approved}" class="alert alert-success" role="alert">
+                Wniosek zatwierdzony
+                Sprawdzony przez:
+                <td th:text="${form.clerkName}"/>
+                <br>
+            </div>
+            <div th:if="${!form.approved}" class="alert alert-danger" role="alert">
+                Wniosek odrzucony.<br>
+                Sprawdzony przez:
+                <td th:text="${form.clerkName}"/>
+                <br>
+                Powód odrzucenia wniosku
+                <td th:text="${form.comment}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <button th:if="${!form.checked and !conflict}" id="button" type="submit" class="btn btn-primary btn-block">Zapisz</button>
+            <a onclick="goBack()" class="btn btn-primary btn-block">Powrót</a>
+            <script>
+                function goBack() {
+                    window.history.back();
+                }
+            </script>
+        </div>
+    </form>
+
+
+</div>
+</body>
+</html>
